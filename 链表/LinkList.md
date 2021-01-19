@@ -59,7 +59,8 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
 ```
 * 快慢指针问题 
 * 二叉树相关  
-[例题：有序表转换成二叉树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)  
+[例题：有序表转换成二叉树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)   
+[例题：二叉树中的列表](https://leetcode-cn.com/problems/linked-list-in-binary-tree/) 
 
 * 浅拷贝与深拷贝问题  
 [例题：复制带随机指针的链表](https://leetcode-cn.com/problems/copy-list-with-random-pointer/)  
