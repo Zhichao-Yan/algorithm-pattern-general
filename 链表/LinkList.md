@@ -1,5 +1,7 @@
 # 链表
 ## 要点
+
+### 基础属性
 * 求链表最后一个节点
 ```C
 struct ListNode* LastNode(struct ListNode* L)
@@ -57,7 +59,68 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
     return p;
 }
 ```
-* 快慢指针问题 
+
+### 技巧型
+* 快慢指针问题  
+    1. 判断链表中是否有环
+    ```
+    class Solution {
+    public:
+        bool hasCycle(ListNode *head) {
+        ListNode *fast=head;
+        ListNode *slow=head;
+        int flag=0;
+        while(1)
+        {   
+            if(fast&&fast->next)//fast指针每次走2步
+                fast=fast->next->next;
+            else
+                break;
+            //slow每次走一步，不用判断是否为空，因为在同一个链表上有fast趟雷
+            slow=slow->next;
+            if(fast==slow)
+            {
+                flag=1;
+                break;
+            }
+        }
+        if(flag==1)
+            return true;
+        return false;
+        }
+    }; 
+    ```
+    2. 判断链表中环的入口位置
+    ```
+    class Solution {
+    public:
+        ListNode *detectCycle(ListNode *head) {
+            ListNode *fast=head;
+            ListNode *slow=head;
+            while(1)
+            {   
+                if(fast&&fast->next)//fast指针每次走2步
+                    fast=fast->next->next;
+                else
+                    break;
+                slow=slow->next;//slow每次走一步，不用判断是否为空，因为在同一个链表上有fast趟雷
+                if(fast==slow)//fast和slow第一次相遇的位置
+                {
+                    fast=head;//让fast重新回到head,速度每次走一步
+                    while(fast!=slow)
+                    {
+                        fast=fast->next;
+                        slow=slow->next;
+                    }
+                    return fast;
+                }
+            }
+            return NULL;
+        }
+    };
+    ```
+    
+
 * 二叉树相关  
 [例题：有序表转换成二叉树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)   
 [例题：二叉树中的列表](https://leetcode-cn.com/problems/linked-list-in-binary-tree/) 
@@ -91,3 +154,64 @@ struct ListNode* removeZeroSumSublists(struct ListNode* head){
     return pre->next;
 }
 ```  
+* 翻转一个链表  
+```C
+struct ListNode* ReverseList(struct ListNode* pHead ) {
+    // write code here
+    struct ListNode*head;
+    head=NULL;
+    while(pHead)
+    {
+        struct ListNode*n=pHead;
+        pHead=pHead->next;
+        n->next=head;
+        head=n;
+    }
+    return head;
+}
+```
+* 合并2个有序链表
+```C++
+class Solution {
+public:
+    /**
+     * 
+     * @param l1 ListNode类 
+     * @param l2 ListNode类 
+     * @return ListNode类
+     */
+    ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+        if(l1==NULL)
+            return l2;
+        if(l2==NULL)
+            return l1;
+        ListNode *head=NULL,*tail=NULL,*S=NULL;
+        while(l1&&l2)
+        {   
+            if(l1->val<l2->val)
+            {
+                S=l1;
+                l1=l1->next;
+            }else{
+                S=l2;
+                l2=l2->next;
+            }
+            S->next=NULL;
+            if(head==NULL)
+            {
+                head=S;
+                tail=S;
+            }else{
+                tail->next=S;
+                tail=S;
+            }
+        }
+        if(l1)
+            tail->next=l1;
+        if(l2)
+            tail->next=l2;
+        return head;
+        
+    }
+};
+```
