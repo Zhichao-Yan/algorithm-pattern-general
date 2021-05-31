@@ -156,6 +156,7 @@ struct ListNode* removeZeroSumSublists(struct ListNode* head){
 ```  
 * 翻转一个链表  
 ```C
+//翻转
 struct ListNode* ReverseList(struct ListNode* pHead ) {
     // write code here
     struct ListNode*head;
@@ -169,6 +170,9 @@ struct ListNode* ReverseList(struct ListNode* pHead ) {
     }
     return head;
 }
+//头插法
+
+//
 ```
 * 合并2个有序链表
 ```C++
