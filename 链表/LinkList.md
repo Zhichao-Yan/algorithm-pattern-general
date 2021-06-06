@@ -229,6 +229,9 @@ ListNode* ReverseList(ListNode*head)
     }
     return pre->next;
 }
+//头插法
+
+//
 ```
 ```C++
 //第三种方法--头插法 简洁明了推荐++
