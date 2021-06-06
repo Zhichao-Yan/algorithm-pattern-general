@@ -63,7 +63,7 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
 ### 技巧型
 * 快慢指针问题  
     1. 判断链表中是否有环
-    ```
+    ```C++
     class Solution {
     public:
         bool hasCycle(ListNode *head) {
@@ -91,7 +91,7 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
     }; 
     ```
     2. 判断链表中环的入口位置
-    ```
+    ```C++
     class Solution {
     public:
         ListNode *detectCycle(ListNode *head) {
@@ -119,8 +119,49 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
         }
     };
     ```
+    3. 删除链表倒数第n个结点
+    ```C++
+    class Solution {
+    public:
+        ListNode* removeNthFromEnd(ListNode* head, int n) {
+            ListNode* fast=head,*slow=head;
+            int i=1;
+            while(i<=n)
+            {
+                fast=fast->next;
+                i++;
+            }
+            //因为n一定有效，但n等于链表长度时，说明删除倒数第n个结点，也即顺数第一个结点，
+            if(fast==NULL)
+            {
+                head=head->next;
+            }else{
+                //当fast指向最后一个结点时，slow指向倒数第n个结点的前驱
+                while(fast->next)
+                {
+                    fast=fast->next;
+                    slow=slow->next;
+                }
+                slow->next=slow->next->next;
+            }
+        return head;
+        }
+    };
+    ```
+    4. 返回链表中间结点(奇数个返回中间结点，偶数个返回第n/2个结点)
+    ```C++
+    ListNode* MidListNode(ListNode* head)
+    {
+        ListNode *fast=head,*slow=head;
+        while(fast->next&&fast->next->next)
+        {
+            fast=fast->next->next;
+            slow=slow->next;
+        }
+        return slow;
+    }
+    ```
     
-
 * 二叉树相关  
 [例题：有序表转换成二叉树](https://leetcode-cn.com/problems/convert-sorted-list-to-binary-search-tree/)   
 [例题：二叉树中的列表](https://leetcode-cn.com/problems/linked-list-in-binary-tree/) 
@@ -154,8 +195,10 @@ struct ListNode* removeZeroSumSublists(struct ListNode* head){
     return pre->next;
 }
 ```  
-* 翻转一个链表  
+
+* 翻转一个链表 
 ```C
+//第一种方法
 struct ListNode* ReverseList(struct ListNode* pHead ) {
     // write code here
     struct ListNode*head;
@@ -168,8 +211,42 @@ struct ListNode* ReverseList(struct ListNode* pHead ) {
         head=n;
     }
     return head;
+}   
+```
+***
+```C++
+//第二种方法 (也算头插法一下子难明白,不推荐)
+ListNode* ReverseList(ListNode*head)
+{
+    ListNode *pre=new ListNode(-1);
+    pre->next=head;
+    while(head->next)
+    {
+         ListNode *next=head->next;
+         head->next=next->next;
+         next->next=pre->next;
+         pre->next=next;
+    }
+    return pre->next;
 }
 ```
+```C++
+//第三种方法--头插法 简洁明了推荐++
+ListNode* ReverseList(ListNode*head)
+{
+    ListNode *pre=new ListNode(-1);
+    pre->next=NULL;
+    while(head)
+    {
+        ListNode *temp=head;
+        head=head->next;
+        temp->next=pre->next;
+        pre->next=temp;
+    }
+    return pre->next;
+}
+```
+
 * 合并2个有序链表
 ```C++
 class Solution {
@@ -214,4 +291,15 @@ public:
         
     }
 };
+```
+* 单链表逆序遍历
+```C++
+void printListNode(ListNode *head)
+{
+    if(head==NULL)
+        return NULL;
+    printListNode(head->next);
+    cout<< head->val;
+    return;
+}
 ```
