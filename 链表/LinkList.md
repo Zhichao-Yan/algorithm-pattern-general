@@ -1,7 +1,5 @@
 # 链表
-## 要点
-
-### 基础属性
+### 链表基础属性
 * 求链表最后一个节点
 ```C
 struct ListNode* LastNode(struct ListNode* L)
@@ -60,7 +58,7 @@ struct ListNode* getBackwardsNode(struct ListNode* head, int k){
 }
 ```
 
-### 技巧型
+### 特殊技巧
 * 快慢指针问题  
     1. 判断链表中是否有环
     ```C++
