@@ -143,3 +143,23 @@ public:
 };
 ```
 
+### 背包问题
+1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
+```C++
+//对于每一个需要找钱的额度，其换来的最少的纸币数量(不同面额）dp[money]=min(dp[money],dp[money-某一面额]+1)
+class Solution {
+public:
+    int minMoney(vector<int>& arr, int aim) {
+        vector<int> dp(aim+1,1e9);
+        dp[0]=0;//找钱数为0时需要的货币数量为0
+        for(int i=0;i<arr.size();i++)//对于每一种货币面值
+        {
+            for(int j=arr[i];j<=aim;j++)//初始值比arr[i]小没有意义，因为要用到j-arr[i]<0,对于dp[负数]没有意义
+            {
+                dp[j]=min(dp[j],dp[j-arr[i]]+1);
+            }
+        }
+        return dp[aim]>aim?-1:dp[aim];//-1表示换钱失败
+    }
+};
+```
