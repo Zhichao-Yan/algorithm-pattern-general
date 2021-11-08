@@ -1,4 +1,4 @@
-### 简单  
+### 简单入门  
 1. [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 ```C++
 class Solution {
@@ -99,9 +99,8 @@ public:
     }   
      
 };
-```
-### 中等  
-1. [子数组最大乘积](https://www.nowcoder.com/practice/9c158345c867466293fc413cff570356?tpId=188&&tqId=38656&rp=1&ru=/ta/job-code-high-week&qru=/ta/job-code-high-week/question-ranking)
+``` 
+6. [子数组最大乘积](https://www.nowcoder.com/practice/9c158345c867466293fc413cff570356?tpId=188&&tqId=38656&rp=1&ru=/ta/job-code-high-week&qru=/ta/job-code-high-week/question-ranking)
 ```C++
 class Solution {
 public:
@@ -125,7 +124,7 @@ public:
     }
 };
 ```
-2. [连续子数组的最大和](https://www.nowcoder.com/practice/459bd355da1549fa8a49e350bf3df484?tpId=188&&tqId=38594&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
+7. [连续子数组的最大和](https://www.nowcoder.com/practice/459bd355da1549fa8a49e350bf3df484?tpId=188&&tqId=38594&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
 ```C++
 class Solution {
 public:
@@ -142,7 +141,28 @@ public:
     }
 };
 ```
-
+8. [求等差数组数目](https://leetcode-cn.com/problems/arithmetic-slices/)
+```C++
+class Solution {
+public:
+    int numberOfArithmeticSlices(vector<int>& nums) {
+    
+        int dp=0,sum=0;
+        if(nums.size()<3)
+            return 0;
+        for(int i=2;i<nums.size();i++)
+        {
+            if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
+            {
+                dp=dp+1;
+                sum+=dp;
+            }else
+                dp=0;
+        }
+        return sum;
+    }
+};
+```
 ### 背包问题
 1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
 ```C++
