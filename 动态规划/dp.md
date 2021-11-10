@@ -1,19 +1,22 @@
+### 动态规划
+## 特点
 ### 简单入门  
 1. [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 ```C++
 class Solution {
 public:
+    //到达第n阶梯的方法数=到达第n-1层方法数+到达第n-2层的方法数
     int climbStairs(int n) {
-        if(n<=2)
-            return n;
-        int a=1,b=2;
-        for(int i=3;i<=n;i++)
+        if(n<=1)//如果阶梯只有一层，一步抵达
+            return 1;
+        int a=1,b=1;//a代表能过到达第i-1阶的方法数，b代表能过到达第i-2阶的方法数
+        for(int i=2;i<=n;i++)
         {
             int temp=a+b;
-            a=b;
-            b=temp;
+            b=a;
+            a=temp;
         }
-        return b;
+        return a;
     }
 };
 ```
@@ -23,12 +26,15 @@ class Solution {
 public:
     int rob(vector<int>& nums) {
         int n=nums.size();
-        int a=0,b=nums[0],sum;
-        for(int i=1;i<n;i++)
-        {
-            sum=max(a+nums[i],b);
+        int a=0,b=0;//如何理解a和b？
+        //a代表[0,i-2]的区间内不触发机关能抢到的最大金额
+        //b代表[0,i-1]的区间内不触发机关能抢到的最大金额
+        //求取[0,i]区间内抢劫的最大金额c受a和b的影响，c=max(a+nums[i],b))
+        for(int i=0;i<n;i++)
+        {   
+            int temp=max(a+nums[i],b);
             a=b;
-            b=sum;
+            b=temp;
         }
         return b;
     }
@@ -51,35 +57,14 @@ public:
                 if(i!=0&&j==0)
                     matrix[i][j]=matrix[i][j]+matrix[i-1][j];
                 if(i!=0&&j!=0)
-                    matrix[i][j]=matrix[i][j]+min(matrix[i-1][j],matrix[i][j-1]);
-            }
+                    matrix[i][j]=matrix[i][j]+min(matrix[i-1][j],matrix[i][j-1]);//状态转移方程
+            }//当前最小路径取决于：左边和上面位置路径的较小值
         }
         return matrix[m-1][n-1];
     }
 };
 ```
-4. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
-```C++
-class Solution {
-public:
-    int maxProfit(vector<int>& prices) {
-        int min=prices[0];
-        int profit=0;
-        for(int i=1;i<prices.size();i++)
-        {
-            if(prices[i]<min)
-            {
-                min=prices[i];
-            }else{
-                if(prices[i]-min>profit)
-                    profit=prices[i]-min;
-            }
-        }
-        return profit;
-    }
-};
-```
-5. [求路径](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
+4. [求路径](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
 ```C++
 class Solution {
 public:
@@ -92,15 +77,14 @@ public:
                 if(i==0||j==0)
                     dp[i][j]=1;
                 else
-                    dp[i][j]=dp[i-1][j]+dp[i][j-1];
+                    dp[i][j]=dp[i-1][j]+dp[i][j-1];//到达[i,j]位置的路径总数=到达[i-1,j]位置的路径总数+到达[i,j-1]位置的路径总数
             }
         }
         return dp[m-1][n-1];
     }   
-     
 };
 ``` 
-6. [子数组最大乘积](https://www.nowcoder.com/practice/9c158345c867466293fc413cff570356?tpId=188&&tqId=38656&rp=1&ru=/ta/job-code-high-week&qru=/ta/job-code-high-week/question-ranking)
+5. [子数组最大乘积](https://www.nowcoder.com/practice/9c158345c867466293fc413cff570356?tpId=188&&tqId=38656&rp=1&ru=/ta/job-code-high-week&qru=/ta/job-code-high-week/question-ranking)
 ```C++
 class Solution {
 public:
@@ -108,8 +92,10 @@ public:
         double max_multiply=arr[0],mx=arr[0],mn=arr[0];
         for(int i=1;i<arr.size();i++)
         {   
+            //a代表以arr[i-1]结尾的连续数组元素累乘的最大值
+            //b代表以arr[i-1]结尾的连续数组元素累乘的最小值
             double a=mx,b=mn;
-            if(arr[i]>0)
+            if(arr[i]>0)//值存在正负
             {
                 mx=max(arr[i], arr[i]*a);
                 mn=min(arr[i], arr[i]*b);
@@ -117,49 +103,71 @@ public:
                 mx=max(arr[i],arr[i]*b);
                 mn=min(arr[i], arr[i]*a);
             }
-            if(mx>max_multiply)
+            if(mx>max_multiply)//max_multiply是其中子数组的累乘的最大积
                 max_multiply=mx;
         }
         return max_multiply;
     }
 };
 ```
-7. [连续子数组的最大和](https://www.nowcoder.com/practice/459bd355da1549fa8a49e350bf3df484?tpId=188&&tqId=38594&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
+6. [连续子数组的最大和](https://www.nowcoder.com/practice/459bd355da1549fa8a49e350bf3df484?tpId=188&&tqId=38594&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
 ```C++
 class Solution {
 public:
     int FindGreatestSumOfSubArray(vector<int> array) {
         int Max=array[0];
-        int Maxi=array[0];//maxi定义为包含第i个元素在内的连续元素数组的最大值
+        int sum=array[0];//sum表示以array[i-1]元素结尾的连续数组和的最大值
+        //以array[i]元素结尾的数组的和的最大值：取决于以array[i-1]元素结尾的连续数组和的最大值和array[i]的值
         for(int i=1;i<array.size();i++)
         {
-            Maxi=max(array[i],Maxi+array[i]);
-            if(Maxi>Max)
-                Max=Maxi;
+            sum=max(array[i],sum+array[i]);//状态方程
+            if(sum>Max)//Max记录其中经历的最大的连续数组和
+                Max=sum;
         }   
         return Max;
     }
 };
 ```
-8. [求等差数组数目](https://leetcode-cn.com/problems/arithmetic-slices/)
+7. [求等差数组数目的个数](https://leetcode-cn.com/problems/arithmetic-slices/)
 ```C++
 class Solution {
 public:
     int numberOfArithmeticSlices(vector<int>& nums) {
     
-        int dp=0,sum=0;
+        int dp=0,sum=0;//sum表示总的等差数组个数
         if(nums.size()<3)
-            return 0;
+            return 0;//长度<0不存在等差数组
         for(int i=2;i<nums.size();i++)
         {
             if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
-            {
-                dp=dp+1;
-                sum+=dp;
+            {   
+                //若成立，则《以nums[i]结尾的等差子数组》的个数比《以nums[i]结尾的等差子数组》个数多一个，多了那个是：(nums[i-2],nums[i-1],nums[i])
+                dp=dp+1;//状态方程
+                sum+=dp;//将个数进行累加
             }else
                 dp=0;
         }
         return sum;
+    }
+};
+```
+8. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
+```C++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int min=prices[0];
+        int profit=0;
+        for(int i=1;i<prices.size();i++)
+        {
+            if(prices[i]<min)
+            {
+                min=prices[i];//profit不变
+            }else{
+                profit=max(prices[i]-min,profit);//状态方程
+            }
+        }
+        return profit;
     }
 };
 ```
@@ -170,7 +178,7 @@ public:
 class Solution {
 public:
     int minMoney(vector<int>& arr, int aim) {
-        vector<int> dp(aim+1,1e9);
+        vector<int> dp(aim+1,1e9);//初始化，假设需要很多张
         dp[0]=0;//找钱数为0时需要的货币数量为0
         for(int i=0;i<arr.size();i++)//对于每一种货币面值
         {
