@@ -171,6 +171,39 @@ public:
     }
 };
 ```
+9. [最大正方形](https://leetcode-cn.com/problems/maximal-square/)
+```C++
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int max_side=0;//标记全局的最大边长
+        vector<vector<int>> dp(n,vector<int>(m,0));//dp[i][j]代表以元素[i,j]为右下角的最大正方形的边长
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(matrix[i][j]=='0')
+                    dp[i][j]=0;
+                else
+                {
+                    if(i!=0&&j!=0)
+                    {
+                        dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;//状态转移方程
+                    }else
+                    {
+                        dp[i][j]=1;
+                    }
+                }
+                if(dp[i][j]>max_side)
+                    max_side=dp[i][j];
+            }
+        }
+        return max_side*max_side;
+    }
+};
+```
 ### 背包问题
 1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
 ```C++
