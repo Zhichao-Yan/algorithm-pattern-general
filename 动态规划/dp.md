@@ -213,14 +213,33 @@ public:
     int minMoney(vector<int>& arr, int aim) {
         vector<int> dp(aim+1,1e9);//初始化，假设需要很多张
         dp[0]=0;//找钱数为0时需要的货币数量为0
-        for(int i=0;i<arr.size();i++)//对于每一种货币面值
+        for(int i=1;i<=aim;i++)
         {
-            for(int j=arr[i];j<=aim;j++)//初始值比arr[i]小没有意义，因为要用到j-arr[i]<0,对于dp[负数]没有意义
-            {
-                dp[j]=min(dp[j],dp[j-arr[i]]+1);
+            for(int j=0;j<arr.size();j++)
+            {   
+                if(arr[j]<=i)//面值比i小才能进行兑换，否则没有意义
+                    dp[i]=min(dp[i],dp[i-arr[j]]+1);
             }
         }
-        return dp[aim]>aim?-1:dp[aim];//-1表示换钱失败
+        return dp[aim]>aim?-1:dp[aim];////-1表示换钱失败
+    }
+};
+```
+2. [求整数由完全平方数组合的个数](https://leetcode-cn.com/problems/perfect-squares/)
+```C++
+class Solution {
+public:
+    int numSquares(int n) {
+        vector<int> dp(n+1,INT_MAX);
+        dp[0]=0;
+        for(int i=1;i<=n;i++)
+        {
+            for(int j=1;j*j<=i;j++)
+            {
+                dp[i]=min(dp[i],dp[i-j*j]+1);
+            }
+        }
+        return dp[n];
     }
 };
 ```
