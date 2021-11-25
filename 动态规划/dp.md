@@ -1,5 +1,14 @@
 ### 动态规划
-## 特点
+## 特点：通过把原问题分解为相对简单的子问题的方式求解复杂问题的方法。
+## 常用于：
+1. 具有重叠的子问题   
+    1. 子问题和原问题非常相似：具有递归性质
+    2. 子问题可能出现多次：一个子问题只计算一次，然后进行记忆化存储（考虑使用空间压缩），便于下次之间查找，减少计算量
+    3. 原问题的解可以由子问题推导：求状态转移方程
+    4. 无后效性：即子问题的解一旦确定，就不再改变，不受在这之后、包含它的更大的问题的求解决策影响
+2. 最优子结构：如果一个问题的最优解包含其子问题的最优解，就称此问题具有最优子结构
+
+
 ### 简单入门  
 1. [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 ```C++
@@ -12,7 +21,7 @@ public:
         int a=1,b=1;//a代表能过到达第i-1阶的方法数，b代表能过到达第i-2阶的方法数
         for(int i=2;i<=n;i++)
         {
-            int temp=a+b;
+            int temp=a+b;//状态转移方程
             b=a;
             a=temp;
         }
@@ -27,12 +36,12 @@ public:
     int rob(vector<int>& nums) {
         int n=nums.size();
         int a=0,b=0;//如何理解a和b？
-        //a代表[0,i-2]的区间内不触发机关能抢到的最大金额
-        //b代表[0,i-1]的区间内不触发机关能抢到的最大金额
-        //求取[0,i]区间内抢劫的最大金额c受a和b的影响，c=max(a+nums[i],b))
+        //a代表[0,i-2]的区间内不触发机关能抢到的最大金额（子问题最优解）
+        //b代表[0,i-1]的区间内不触发机关能抢到的最大金额（子问题最优解）
+        //求取[0,i]区间内抢劫的最大金额c受a和b的影响，c=max(a+nums[i],b))（全局最优解）
         for(int i=0;i<n;i++)
         {   
-            int temp=max(a+nums[i],b);
+            int temp=max(a+nums[i],b);//状态转移方程
             a=b;
             b=temp;
         }
@@ -40,7 +49,7 @@ public:
     }
 };
 ```
-3. [矩阵路径的最小和](https://www.nowcoder.com/practice/7d21b6be4c6b429bb92d219341c4f8bb?tpId=188&&tqId=38601&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
+3. [矩阵的最小路径](https://www.nowcoder.com/practice/7d21b6be4c6b429bb92d219341c4f8bb?tpId=188&&tqId=38601&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
 ```C++
 class Solution {
 public:
@@ -64,7 +73,7 @@ public:
     }
 };
 ```
-4. [求路径](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
+4. [求路径数](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
 ```C++
 class Solution {
 public:
@@ -77,7 +86,8 @@ public:
                 if(i==0||j==0)
                     dp[i][j]=1;
                 else
-                    dp[i][j]=dp[i-1][j]+dp[i][j-1];//到达[i,j]位置的路径总数=到达[i-1,j]位置的路径总数+到达[i,j-1]位置的路径总数
+                    //到达[i,j]位置的路径总数=到达[i-1,j]位置的路径总数+到达[i,j-1]位置的路径总数
+                    dp[i][j]=dp[i-1][j]+dp[i][j-1];//状态转移方程
             }
         }
         return dp[m-1][n-1];
@@ -141,8 +151,8 @@ public:
         {
             if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
             {   
-                //若成立，则《以nums[i]结尾的等差子数组》的个数比《以nums[i]结尾的等差子数组》个数多一个，多了那个是：(nums[i-2],nums[i-1],nums[i])
-                dp=dp+1;//状态方程
+                //若成立，则《以nums[i]结尾的等差子数组》的个数比《以nums[i-1]结尾的等差子数组》个数多一个，多了那个是：(nums[i-2],nums[i-1],nums[i])
+                dp=dp+1;//状态转移方程
                 sum+=dp;//将个数进行累加
             }else
                 dp=0;
@@ -236,7 +246,7 @@ public:
         {
             for(int j=1;j*j<=i;j++)
             {
-                dp[i]=min(dp[i],dp[i-j*j]+1);
+                dp[i]=min(dp[i],dp[i-j*j]+1); //状态转移方程
             }
         }
         return dp[n];
