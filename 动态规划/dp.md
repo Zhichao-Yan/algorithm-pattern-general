@@ -214,6 +214,41 @@ public:
     }
 };
 ```
+10. [最长公共子串](https://leetcode-cn.com/problems/longest-common-subsequence/)
+```C++
+class Solution {
+public:
+    int longestCommonSubsequence(string text1, string text2) {
+        int m=text1.size();
+        int n=text2.size();
+        vector< vector<int>> dp(m,vector<int>(n,0));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(text1[i]==text2[j])
+                {
+                    if(i==0||j==0)//如果i==0||j==0,所以text1[0~i-1]和text2[0~j-1]不存在公共子串
+                        dp[i][j]=1;
+                    else
+                        dp[i][j]=dp[i-1][j-1]+1;//状态转移方程, text1[i]==text2[j]则公共子串长度在dp[i-1][j-1]+1
+                }else{
+                    if(i==0&&j==0)
+                        dp[i][j]=0;//i==0&&j==0，那么text1[0~i-1]和text2[0~j-1]长度为0，不受前面的字符子数组影响
+                    else
+                    {   
+                        if(j>0)
+                            dp[i][j]=max(dp[i][j],dp[i][j-1]);//dp[i][j]受dp[i][j-1]或者dp[i-1][j]影响
+                        if(i>0)
+                            dp[i][j]=max(dp[i][j],dp[i-1][j]);
+                    }
+                }
+            }
+        }
+        return dp[m-1][n-1];
+    }
+};
+```
 ### 背包问题
 1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
 ```C++
@@ -247,6 +282,29 @@ public:
             for(int j=1;j*j<=i;j++)
             {
                 dp[i]=min(dp[i],dp[i-j*j]+1); //状态转移方程
+            }
+        }
+        return dp[n];
+    }
+};
+```
+3. [单词拆分](https://leetcode-cn.com/problems/word-break/)
+```C++
+class Solution {
+public:
+    bool wordBreak(string s, vector<string>& wordDict) {
+        int n=s.length();
+        vector<bool> dp(n+1,false);
+        dp[0]=true;
+        for(int i=1;i<=n;i++)
+        {
+            for( auto word:wordDict)
+            {
+                int len=word.length();
+                if(i>=len&&s.substr(i-len,len)==word)
+                {
+                    dp[i]=dp[i]||dp[i-len];
+                }
             }
         }
         return dp[n];
