@@ -16,16 +16,16 @@ class Solution {
 public:
     //到达第n阶梯的方法数=到达第n-1层方法数+到达第n-2层的方法数
     int climbStairs(int n) {
-        if(n<=1)//如果阶梯只有一层，一步抵达
-            return 1;
-        int a=1,b=1;//a代表能过到达第i-1阶的方法数，b代表能过到达第i-2阶的方法数
-        for(int i=2;i<=n;i++)
+        if(n<=2)//如果阶梯只有一层，一步抵达
+            return n;
+        int pre1=1,pre2=2;
+        for(int i=3;i<=n;++i)
         {
-            int temp=a+b;//状态转移方程
-            b=a;
-            a=temp;
+            int temp=pre1+pre2;
+            pre1=pre2;
+            pre2=temp;
         }
-        return a;
+        return pre2;
     }
 };
 ```
@@ -248,6 +248,43 @@ public:
         return dp[m-1][n-1];
     }
 };
+```
+11. [编辑距离](https://leetcode.cn/problems/edit-distance/)
+```C++
+/*
+dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首先初始化动态数组，dp[0][j]表示将一个空串转换成str2的前j个字符需要操作数，我们知道应该是j个插入操作;dp[i][0]表示将str1的前i个字符转换为空串的操作数，我们知道应该是i个删除操作。
+接着用两层for循环遍历两个字符串str1、str2。
+比较每一个字符str1[i-1]和str2[j-1]，即str1第i个字符和str2第j个字符
+若两个字符相等，即str1[i-1] == str2[j-1]，则在这一个位置的编辑距离和上一个字符相同，因此对应的数组dp[i][j]=dp[i-1][j-1]；
+若两个字符不相等：
+可以通过可删除str1[i-1]这个字符，但是还需dp[i-1][j]个编辑操作才能使两个字符串相同
+即dp[i][j] = 1 + dp[i-1][j]；
+还可以通过删除str2[j-1]这个字符，但是还需dp[i][j-1]个编辑操作才能使两个字符串相同
+即dp[i][j] = 1 + dp[i][j-1]；
+也可以替换str1[i-1]为str2[i-1]使二者相等，此时dp[i][j] = 1 + dp[i-1][j-1]。
+取三者之中最小为两个字符串的最小编辑距离
+*/
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector< vector<int>> dp(m+1,vector<int>(n+1,0));
+        dp[0][0]=0;
+        for(int i=1;i<=m;i++)
+            dp[i][0]=i;
+        for(int j=1;j<=n;j++)
+            dp[0][j]=j;
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(word1[i-1]==word2[j-1])
+                    dp[i][j]=dp[i-1][j-1];
+                else
+                    dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;
+            }
+        }
+        return dp[m][n];
+    }
 ```
 ### 背包问题
 1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
