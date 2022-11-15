@@ -9,7 +9,7 @@
 2. 最优子结构：如果一个问题的最优解包含其子问题的最优解，就称此问题具有最优子结构
 
 
-### 简单入门  
+### 一维线性 
 1. [爬楼梯](https://leetcode-cn.com/problems/climbing-stairs/)
 ```C++
 class Solution {
@@ -29,192 +29,121 @@ public:
     }
 };
 ```
-2. [打家劫舍](https://leetcode-cn.com/problems/house-robber/) 
-``` C++
-class Solution {
-public:
-    int rob(vector<int>& nums) {
-        int n=nums.size();
-        int a=0,b=0;//如何理解a和b？
-        //a代表[0,i-2]的区间内不触发机关能抢到的最大金额（子问题最优解）
-        //b代表[0,i-1]的区间内不触发机关能抢到的最大金额（子问题最优解）
-        //求取[0,i]区间内抢劫的最大金额c受a和b的影响，c=max(a+nums[i],b))（全局最优解）
-        for(int i=0;i<n;i++)
-        {   
-            int temp=max(a+nums[i],b);//状态转移方程
-            a=b;
-            b=temp;
-        }
-        return b;
-    }
-};
-```
-3. [矩阵的最小路径](https://www.nowcoder.com/practice/7d21b6be4c6b429bb92d219341c4f8bb?tpId=188&&tqId=38601&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
+2. [连续子数组的最大和](https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+* 首先确定dp的定义：为以nums[i]元素结尾的连续子数组的最大和
+* max_sum寻找以nums[i]元素结尾的连续子数组最大和中的最大者
 ```C++
-class Solution {
-public:
-    int minPathSum(vector<vector<int> >& matrix) {
-        int m=matrix.size(),n=matrix[0].size();
-        for(int i=0;i<m;i++)
+    int maxSubArray(vector<int>& nums) {
+        int max_sum=nums[0];
+        int dp=nums[0];
+        for(int i=1;i<=nums.size()-1;i++)
         {
-            for(int j=0;j<n;j++)
-            {
-                if(i==0&&j==0)
-                    continue;
-                if(i==0&&j!=0)
-                    matrix[i][j]=matrix[i][j]+matrix[i][j-1];
-                if(i!=0&&j==0)
-                    matrix[i][j]=matrix[i][j]+matrix[i-1][j];
-                if(i!=0&&j!=0)
-                    matrix[i][j]=matrix[i][j]+min(matrix[i-1][j],matrix[i][j-1]);//状态转移方程
-            }//当前最小路径取决于：左边和上面位置路径的较小值
+            dp=max(dp+nums[i],nums[i]);
+            max_sum=max(dp,max_sum);
         }
-        return matrix[m-1][n-1];
+        return max_sum;
     }
-};
 ```
-4. [求路径数](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
+3. [连续子数组最大乘积](https://leetcode.cn/problems/maximum-product-subarray/)
 ```C++
-class Solution {
-public:
-    int uniquePaths(int m, int n) {
-        vector<vector<int> > dp(m,vector<int>(n,0));
-        for(int i=0;i<m;i++)
+    int maxProduct(vector<int>& nums) {
+        if(nums.size()==1)
+            return nums[0];
+        int mx=nums[0],mn=nums[0],maxProduct=nums[0];
+        for(int i=1;i<nums.size();i++)
         {
-            for(int j=0;j<n;j++)
+            int val=nums[i];
+            if(val>0)
             {
-                if(i==0||j==0)
-                    dp[i][j]=1;
-                else
-                    //到达[i,j]位置的路径总数=到达[i-1,j]位置的路径总数+到达[i,j-1]位置的路径总数
-                    dp[i][j]=dp[i-1][j]+dp[i][j-1];//状态转移方程
-            }
-        }
-        return dp[m-1][n-1];
-    }   
-};
-``` 
-5. [子数组最大乘积](https://www.nowcoder.com/practice/9c158345c867466293fc413cff570356?tpId=188&&tqId=38656&rp=1&ru=/ta/job-code-high-week&qru=/ta/job-code-high-week/question-ranking)
-```C++
-class Solution {
-public:
-    double maxProduct(vector<double> arr) {
-        double max_multiply=arr[0],mx=arr[0],mn=arr[0];
-        for(int i=1;i<arr.size();i++)
-        {   
-            //a代表以arr[i-1]结尾的连续数组元素累乘的最大值
-            //b代表以arr[i-1]结尾的连续数组元素累乘的最小值
-            double a=mx,b=mn;
-            if(arr[i]>0)//值存在正负
-            {
-                mx=max(arr[i], arr[i]*a);
-                mn=min(arr[i], arr[i]*b);
+                mx=max(mx*val,val);//求得包括val的连续数组最大乘积
+                mn=min(mn*val,val);//求得包括val的连续数组最小乘积
+                maxProduct=max(maxProduct,mx);
             }else{
-                mx=max(arr[i],arr[i]*b);
-                mn=min(arr[i], arr[i]*a);
+                int a=mx,b=mn;
+                mx=max(b*val,val);
+                mn=min(a*val,val);
+                maxProduct=max(maxProduct,mx);
             }
-            if(mx>max_multiply)//max_multiply是其中子数组的累乘的最大积
-                max_multiply=mx;
         }
-        return max_multiply;
+        return maxProduct;
     }
-};
 ```
-6. [连续子数组的最大和](https://www.nowcoder.com/practice/459bd355da1549fa8a49e350bf3df484?tpId=188&&tqId=38594&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking) 
-```C++
-class Solution {
-public:
-    int FindGreatestSumOfSubArray(vector<int> array) {
-        int Max=array[0];
-        int sum=array[0];//sum表示以array[i-1]元素结尾的连续数组和的最大值
-        //以array[i]元素结尾的数组的和的最大值：取决于以array[i-1]元素结尾的连续数组和的最大值和array[i]的值
-        for(int i=1;i<array.size();i++)
-        {
-            sum=max(array[i],sum+array[i]);//状态方程
-            if(sum>Max)//Max记录其中经历的最大的连续数组和
-                Max=sum;
-        }   
-        return Max;
-    }
-};
-```
-7. [求等差数组数目的个数](https://leetcode-cn.com/problems/arithmetic-slices/)
-```C++
-class Solution {
-public:
+
+5. [等差数列划分](https://leetcode.cn/problems/arithmetic-slices/description/)
+```C++ 
     int numberOfArithmeticSlices(vector<int>& nums) {
-    
-        int dp=0,sum=0;//sum表示总的等差数组个数
-        if(nums.size()<3)
-            return 0;//长度<0不存在等差数组
+        if(nums.size()<3)//size<3直接不存在等差数组
+            return 0;
+        int sum=0;//累积dp和，即输入数组nums总的等差数列个数
+        int dp=0;//dp定义成以nums[i]元素结尾的连续子数组包含的等差数列个数
         for(int i=2;i<nums.size();i++)
         {
             if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
-            {   
-                //若成立，则《以nums[i]结尾的等差子数组》的个数比《以nums[i-1]结尾的等差子数组》个数多一个，多了那个是：(nums[i-2],nums[i-1],nums[i])
-                dp=dp+1;//状态转移方程
-                sum+=dp;//将个数进行累加
+            {
+                dp+=1;
             }else
                 dp=0;
+            sum+=dp;
         }
         return sum;
     }
-};
 ```
-8. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
+
+### 二维矩阵
+1. [放苹果](https://www.nowcoder.com/practice/bfd8234bb5e84be0b493656e390bdebf?tpId=37&tqId=21284&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fdifficulty%3D2%26page%3D1%26pageSize%3D50%26search%3D%26tpId%3D37%26type%3D37&difficulty=2&judgeStatus=undefined&tags=&title=)
 ```C++
-class Solution {
-public:
-    int maxProfit(vector<int>& prices) {
-        int min=prices[0];
-        int profit=0;
-        for(int i=1;i<prices.size();i++)
+int main() {
+    int m,n;
+    while(cin>>m>>n)
+    {
+        vector<vector<int>> v(m+1,vector<int>(n+1,0));
+        for(int i=1;i<=n;i++)
         {
-            if(prices[i]<min)
-            {
-                min=prices[i];//profit不变
-            }else{
-                profit=max(prices[i]-min,profit);//状态方程
-            }
-        }
-        return profit;
-    }
-};
-```
-9. [最大正方形](https://leetcode-cn.com/problems/maximal-square/)
-```C++
-class Solution {
-public:
-    int maximalSquare(vector<vector<char>>& matrix) {
-        int n=matrix.size();
-        int m=matrix[0].size();
-        int max_side=0;//标记全局的最大边长
-        vector<vector<int>> dp(n,vector<int>(m,0));//dp[i][j]代表以元素[i,j]为右下角的最大正方形的边长
-        for(int i=0;i<n;i++)
+            v[1][i]=1;//1个苹果放i个盘子方法为1种
+            v[0][i]=1;//0个苹果放i个盘子方法为1种
+        }    
+        for(int j=1;j<=m;j++)
+            v[j][1]=1;//j个苹果放1个盘子方法为1种
+        for(int i=2;i<=m;i++)
         {
-            for(int j=0;j<m;j++)
+            for(int j=2;j<=n;j++)
             {
-                if(matrix[i][j]=='0')
-                    dp[i][j]=0;
-                else
-                {
-                    if(i!=0&&j!=0)
-                    {
-                        dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;//状态转移方程
-                    }else
-                    {
-                        dp[i][j]=1;
-                    }
+                if(j>i)//盘子比苹果多
+                    v[i][j]=v[i][i];//盘子j大于苹果i的情况下，等同于i个盘子i个苹果
+                else{
+                    v[i][j]=v[i][j-1]+v[i-j][j];
                 }
-                if(dp[i][j]>max_side)
-                    max_side=dp[i][j];
             }
         }
-        return max_side*max_side;
+        cout<<v[m][n]<<endl;
     }
-};
+}
 ```
-10. [最长公共子串](https://leetcode-cn.com/problems/longest-common-subsequence/)
+2. [最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/description/)
+```C++
+    int longestPalindromeSubseq(string s) {
+        int n=s.size();
+        vector<vector<int>> dp(n,vector<int>(n,0));
+        for(int i=0;i<n;i++)
+            dp[i][i]=1;
+        for(int len=1;len<n;len++)//长度为len+1的子串，串长越来越大
+        {
+            for(int pos=0;pos+len<n;pos++)
+            {
+                int i=pos;
+                int j=pos+len;
+                if(s[i]==s[j])
+                {
+                    dp[i][j]=dp[i+1][j-1]+2;
+                }else{
+                    dp[i][j]=max(dp[i+1][j],dp[i][j-1]);
+                }
+            }
+        }
+        return dp[0][n-1];
+    }
+```
+3. [最长公共子串](https://leetcode-cn.com/problems/longest-common-subsequence/)
 ```C++
 class Solution {
 public:
@@ -249,7 +178,7 @@ public:
     }
 };
 ```
-11. [编辑距离](https://leetcode.cn/problems/edit-distance/)
+4. [编辑距离](https://leetcode.cn/problems/edit-distance/)
 ```C++
 /*
 dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首先初始化动态数组，dp[0][j]表示将一个空串转换成str2的前j个字符需要操作数，我们知道应该是j个插入操作;dp[i][0]表示将str1的前i个字符转换为空串的操作数，我们知道应该是i个删除操作。
@@ -286,6 +215,149 @@ dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首�
         return dp[m][n];
     }
 ```
+5. [最小路径和](https://leetcode.cn/problems/minimum-path-sum/description/) 
+```C++
+    int minPathSum(vector<vector<int>>& grid) {
+        int m=grid.size();
+        int n=grid[0].size();
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==0&&j==0)
+                    continue;
+                if(i==0&&j!=0)
+                    grid[i][j]=grid[i][j]+grid[i][j-1];
+                if(i!=0&&j==0)
+                    grid[i][j]=grid[i][j]+grid[i-1][j];
+                if(i!=0&&j!=0)
+                    grid[i][j]=grid[i][j]+min(grid[i-1][j],grid[i][j-1]);
+            }
+        }
+        return grid[m-1][n-1];
+    }
+```
+6. [求路径数](https://www.nowcoder.com/practice/166eaff8439d4cd898e3ba933fbc6358?tpId=188&&tqId=38657&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)  
+```C++
+class Solution {
+public:
+    int uniquePaths(int m, int n) {
+        vector<vector<int> > dp(m,vector<int>(n,0));
+        for(int i=0;i<m;i++)
+        {
+            for(int j=0;j<n;j++)
+            {
+                if(i==0||j==0)
+                    dp[i][j]=1;
+                else
+                    //到达[i,j]位置的路径总数=到达[i-1,j]位置的路径总数+到达[i,j-1]位置的路径总数
+                    dp[i][j]=dp[i-1][j]+dp[i][j-1];//状态转移方程
+            }
+        }
+        return dp[m-1][n-1];
+    }   
+};
+``` 
+7. [最大正方形](https://leetcode-cn.com/problems/maximal-square/)
+```C++
+class Solution {
+public:
+    int maximalSquare(vector<vector<char>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        int max_side=0;//标记全局的最大边长
+        vector<vector<int>> dp(n,vector<int>(m,0));//dp[i][j]代表以元素[i,j]为右下角的最大正方形的边长
+        for(int i=0;i<n;i++)
+        {
+            for(int j=0;j<m;j++)
+            {
+                if(matrix[i][j]=='0')
+                    dp[i][j]=0;
+                else
+                {
+                    if(i!=0&&j!=0)
+                    {
+                        dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;//状态转移方程
+                    }else
+                    {
+                        dp[i][j]=1;
+                    }
+                }
+                if(dp[i][j]>max_side)
+                    max_side=dp[i][j];
+            }
+        }
+        return max_side*max_side;
+    }
+};
+```
+### 买股票问题
+1. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
+```C++
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int min=prices[0];
+        int profit=0;
+        for(int i=1;i<prices.size();i++)
+        {
+            if(prices[i]<min)
+            {
+                min=prices[i];//profit不变
+            }else{
+                profit=max(prices[i]-min,profit);//状态方程
+            }
+        }
+        return profit;
+    }
+};
+```
+### 相邻性问题
+1. [打家劫舍](https://leetcode-cn.com/problems/house-robber/) 
+``` C++
+class Solution {
+public:
+    int rob(vector<int>& nums) {
+        int n=nums.size();
+        int a=0,b=0;//如何理解a和b？
+        //a代表[0,i-2]的区间内不触发机关能抢到的最大金额（子问题最优解）
+        //b代表[0,i-1]的区间内不触发机关能抢到的最大金额（子问题最优解）
+        //求取[0,i]区间内抢劫的最大金额c受a和b的影响，c=max(a+nums[i],b))（全局最优解）
+        for(int i=0;i<n;i++)
+        {   
+            int temp=max(a+nums[i],b);//状态转移方程
+            a=b;
+            b=temp;
+        }
+        return b;
+    }
+};
+```
+### 递增序列问题
+1. [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
+```C++
+    int lengthOfLIS(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0||n==1)
+            return n;
+        int len=0;
+        vector<int> dp(n,1);//dp定义为以【第i(0~n-1)个元素dp[i]结尾的子序列】（不要求是连续的）的最大长度
+        for(int i=1;i<n;i++)//求dp[i]是建立在它前面元素的dp[j](不要去连续）的基础上，因此需要对nums[i]前面的每个元素nums[j]进行回溯（和nums[i]）进行比较
+        {
+            int mx=0;
+            for(int j=0;j<i;j++)
+            {
+                if(nums[j]<nums[i])
+                {
+                    mx=max(mx,dp[j]);
+                }
+            }
+            dp[i]=mx+1;
+            len=max(len,dp[i]);//返回的len是整个数组的最大值
+        }
+        return len;
+    }
+```
 ### 背包问题
 1. [换钱的最少货币数](https://www.nowcoder.com/practice/3911a20b3f8743058214ceaa099eeb45?tpId=188&&tqId=38635&rp=1&ru=/activity/oj&qru=/ta/job-code-high-week/question-ranking)
 ```C++
@@ -307,7 +379,10 @@ public:
     }
 };
 ```
-2. [求整数由完全平方数组合的个数](https://leetcode-cn.com/problems/perfect-squares/)
+
+
+### 分割类问题
+1. [完全平方数个数](https://leetcode-cn.com/problems/perfect-squares/)
 ```C++
 class Solution {
 public:
@@ -325,7 +400,7 @@ public:
     }
 };
 ```
-3. [单词拆分](https://leetcode-cn.com/problems/word-break/)
+2. [单词拆分](https://leetcode-cn.com/problems/word-break/)
 ```C++
 class Solution {
 public:
