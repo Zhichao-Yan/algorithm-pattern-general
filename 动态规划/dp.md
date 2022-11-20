@@ -291,6 +291,52 @@ public:
     }
 };
 ```
+8.[正则式匹配](https://leetcode.cn/problems/regular-expression-matching/description/)
+```C++
+    // '*'的意思是前面的字符出现0次或者多次，例如出现0次代表消去前面的字符
+    bool isMatch(string s, string p) {
+    int n=s.size();
+    int m=p.size();
+    vector<vector<bool>> dp(n+1,vector<bool>(m+1,false));
+    dp[0][0]=true;
+    for(int j=2;j<=m;j++)//'*'不可能出现在串p开头第一的位置,所以从j=2开始
+    {
+        if(p[j-1]=='*')
+            dp[0][j]=dp[0][j-2];//s为0，也是可能和正则式进行匹配的，如S=""和P="a*"
+    }
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            if(p[j-1]=='.')
+                dp[i][j]=dp[i-1][j-1];
+            else{
+                if(p[j-1]=='*')
+                {
+                    if(p[j-2]=='.')//p[j-2]为'.'的情况
+                    {
+                        dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j];
+
+                    }else{//p[j-2]为字母的情况
+                        if(p[j-2]==s[i-1])
+                        {
+                            dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j-1]||dp[i-1][j];
+                        }else{
+                            dp[i][j]=dp[i][j-2];//因为不相等，'*'前面那个字母出现0次
+                            //直接匹配第i个字符和第j-2个字符，看是否匹配，如果匹配，那么
+                            //dp[i][j]也匹配了，如果不匹配，那么dp[i][j]就不匹配
+                        }
+                    }
+                }else{
+                    if(p[j-1]==s[i-1]&&dp[i-1][j-1])//如果是字母，则判断二者是否相等
+                        dp[i][j]=true;//并且前面是否匹配
+                }
+            }
+        }
+    }
+    return dp[n][m];
+    }
+```
 ### 买股票问题
 1. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
 ```C++
@@ -379,6 +425,75 @@ public:
     }
 };
 ```
+2.[0-1背包问题](https://www.nowcoder.com/practice/fd55637d3f24484e96dad9e992d3f62e?tpId=230&tqId=2032484&ru=/exam/oj&qru=/ta/dynamic-programming/question-ranking&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D230)
+```C++
+int main() {
+    int n,V;
+    cin>>n>>V;
+    vector<long long> dp1(V+1,0);//求在背包容量允许下能过装下的物品最大价值
+    vector<long long> dp2(V+1,-999999999999999999);//求背包刚刚好装满的情况下装下的最大的价值
+    dp2[0]=0;
+    for(int i=1;i<=n;i++)
+    {
+        int w,v;
+        cin>>w>>v;
+        for(int j=V;j>=w;--j)
+        {
+            dp1[j]=max(dp1[j],dp1[j-w]+v);
+            dp2[j]=max(dp2[j],dp2[j-w]+v);
+        }
+    }
+    cout<<dp1[V]<<endl;
+    if(dp2[V]<0)
+        cout<<0<<endl;
+    else
+        cout<<dp2[V]<<endl;
+}
+```
+3.[完全背包问题](https://www.nowcoder.com/practice/237ae40ea1e84d8980c1d5666d1c53bc?tpId=230&tqId=2032575&ru=/exam/oj&qru=/ta/dynamic-programming/question-ranking&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D230)
+```C++ 
+int main() {
+    int n,V;
+    cin>>n>>V;
+    vector<long long> dp1(V+1,0);////求在背包容量允许下能过装下的物品最大价值
+    vector<long long> dp2(V+1,-999999999999999999);////求背包刚刚好装满的情况下装下的最大的价值
+    dp2[0]=0;
+    for(int i=1;i<=n;i++)
+    {
+        int w,v;
+        cin>>w>>v;
+        for(int j=w;j<=V;j++)
+        {
+            dp1[j]=max(dp1[j],dp1[j-w]+v);
+            dp2[j]=max(dp2[j],dp2[j-w]+v);
+        }
+    }
+    cout<<dp1[V]<<endl;
+    if(dp2[V]<0)
+        cout<<0<<endl;
+    else
+        cout<<dp2[V]<<endl;
+}
+```
+4.[分割等和子集](https://leetcode.cn/problems/partition-equal-subset-sum/description/)
+```C++
+    bool canPartition(vector<int>& nums) {
+        int sum=accumulate(nums.begin(),nums.end(),0);//求数组和
+        if(sum%2==1)//sum为奇数，肯定无法同等分割
+            return false;
+        int target=sum/2;//能否从数组中找到子集的和为target，如果找到，那么则可以分割
+        vector<bool> dp(target+1,false);
+        dp[0]=true;//如果能找到，则最好dp[target]为true
+        for(int i=0;i<nums.size();i++)
+        {
+            for(int j=target;j>=nums[i];j--)
+            {
+                dp[j]=dp[j]||dp[j-nums[i]];
+            }
+        }
+        return dp[target];
+    }
+```
 
 
 ### 分割类问题
@@ -422,4 +537,73 @@ public:
         return dp[n];
     }
 };
+```
+### 前缀和差分
+
+1.[二维前缀](https://www.nowcoder.com/practice/99eb8040d116414ea3296467ce81cbbc?tpId=230&tqId=2023819&ru=/exam/oj&qru=/ta/dynamic-programming/question-ranking&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D230)
+```C++
+int main() {
+    int n,m,q;
+    cin>>n>>m>>q;
+    vector<vector<long>> dp(n+1,vector<long>(m+1,0));
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            int val;
+            cin>>val;
+            dp[i][j]=dp[i][j-1]+dp[i-1][j]-dp[i-1][j-1]+val;//求前缀和
+        }
+    }
+    for(int i=0;i<q;i++)
+    {
+        int x1,y1,x2,y2;
+        cin>>x1>>y1>>x2>>y2;
+        cout<<dp[x2][y2]-dp[x2][y1-1]-dp[x1-1][y2]+dp[x1-1][y1-1]<<endl;
+    }
+}
+```
+2.[二维差分](https://www.nowcoder.com/practice/50e1a93989df42efb0b1dec386fb4ccc?tpId=230&tqId=2024519&ru=/exam/oj&qru=/ta/dynamic-programming/question-ranking&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D230)
+```C++
+int main() {
+    int n,m,q;
+    cin>>n>>m>>q;
+    vector<vector<long>> dp(n+1,vector<long>(m+1,0));
+    vector<vector<long>> num(n+1,vector<long>(m+1,0));
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            cin>>num[i][j];
+        }
+    }
+    for(int i=0;i<q;i++)
+    {
+        int x1,y1,x2,y2,k;
+        cin>>x1>>y1>>x2>>y2>>k;
+        dp[x1][y1]+=k;
+        if(x2<n)
+            dp[x2+1][y1]-=k;
+        if(y2<m)
+            dp[x1][y2+1]-=k;
+        if(x2<n&&y2<m)
+            dp[x2+1][y2+1]+=k;
+    }
+    //求前缀和
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            dp[i][j]+=dp[i][j-1]+dp[i-1][j]-dp[i-1][j-1];
+        }
+    }
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            cout<<(num[i][j]+dp[i][j])<<" ";
+        }
+        cout<<endl;
+    }
+}
 ```
