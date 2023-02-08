@@ -54,18 +54,12 @@
         > 在当前字符串的pos索引位置开始，查找字符c，返回该字符首次出现的位置索引
     * rfind()
         > 查找字符串或者字符最后一次出现的位置，也就是从后往前查找,与find()相反。
-7. 字符串排序
-    * sort(iterator iter1, iterator iter2)
-        > 对[iter1, iter2)进行排序
 8. 字符串提取字串
     * substr(begin_pos,sub_length);
-9. 字符串反转
-    * reverse(str.begin(),str.end());
 10. 字符与数字转换 
     * 从字串到数值 stoi,stol,stod,stof
         > int stoi( const std::string& str, std::size_t* pos = 0, int base = 10 );
-    * 从数值到字符 tostring
-        > 
+    * 从数值到字符 to_string
 ### 反转字符串
 1. [仅仅反转字母](https://leetcode.cn/problems/reverse-only-letters/)
 ```C++

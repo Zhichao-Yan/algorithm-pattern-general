@@ -143,7 +143,7 @@ int main() {
         return dp[0][n-1];
     }
 ```
-3. [最长公共子串](https://leetcode-cn.com/problems/longest-common-subsequence/)
+3. [最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
 ```C++
 class Solution {
 public:
@@ -386,22 +386,20 @@ public:
         int n=nums.size();
         if(n==0||n==1)
             return n;
-        int len=0;
-        vector<int> dp(n,1);//dp定义为以【第i(0~n-1)个元素dp[i]结尾的子序列】（不要求是连续的）的最大长度
-        for(int i=1;i<n;i++)//求dp[i]是建立在它前面元素的dp[j](不要去连续）的基础上，因此需要对nums[i]前面的每个元素nums[j]进行回溯（和nums[i]）进行比较
+        vector<int> dp(n,1);//dp定义为以【第i(0~n-1)个元素nums[i]结尾的子序列】（不要求是连续的）的最大长度
+        int max_len=1;
+        for(int i=1;i<n;i++)//求dp[i]是建立在它前面元素的dp[j](不要求连续）的基础上，因此需要对nums[i]前面的每个元素nums[j]进行回溯（和nums[i]）进行比较
         {
-            int mx=0;
             for(int j=0;j<i;j++)
             {
                 if(nums[j]<nums[i])
                 {
-                    mx=max(mx,dp[j]);
+                    dp[i]=max(dp[i],dp[j]+1);
                 }
             }
-            dp[i]=mx+1;
-            len=max(len,dp[i]);//返回的len是整个数组的最大值
+            max_len=max(max_len,dp[i]);//返回的max_len是整个数组的最大值
         }
-        return len;
+        return max_len;
     }
 ```
 ### 背包问题
