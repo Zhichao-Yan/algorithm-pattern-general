@@ -143,6 +143,43 @@ int main() {
         return dp[0][n-1];
     }
 ```
+3. [最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/description/)
+```C++
+    string longestPalindrome(string s) {
+        int n=s.size();
+        vector<vector<int>> dp(n,vector<int>(n,0));
+        string s0=s.substr(0,1); //最短长度为1，任意一个单字符串都可以
+        for(int i=0;i<n;i++)
+        {
+            dp[i][i]=1;
+        }
+        for(int len=1;len<n;len++)// 长度不断增长
+        {
+            for(int pos=0;pos+len<n;pos++)
+            {
+                int i=pos;
+                int j=pos+len;
+                if(s[i]==s[j])
+                {
+                    if(dp[i+1][j-1]>=0) // 说明里面的子串是回文串
+                    {
+                        dp[i][j]=dp[i+1][j-1]+2;
+                        int size=dp[i][j];
+                        if(size>s0.size())
+                        {
+                            s0=s.substr(i,size);
+                        }
+                    }    
+                    else
+                        dp[i][j]=-1;// 因为dp[i+1][j-1]内串不是回文子串，所以即使相等也没有用
+                }else{
+                    dp[i][j]=-1;  // s[i]！=s[j] 不是回文串，标记为-1
+                }
+            }
+        }
+        return s0;
+    }
+```
 3. [最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
 ```C++
 class Solution {
