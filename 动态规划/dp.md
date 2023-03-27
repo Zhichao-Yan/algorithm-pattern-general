@@ -122,7 +122,9 @@ int main() {
     }
 }
 ```
-2. [最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/description/)
+### 序列和子串问题
+1. 回文子序列问题
+* [最长回文子序列](https://leetcode.cn/problems/longest-palindromic-subsequence/description/)
 ```C++
     int longestPalindromeSubseq(string s) {
         int n=s.size();
@@ -146,7 +148,7 @@ int main() {
         return dp[0][n-1];
     }
 ```
-3. [最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/description/)
+* [最长回文子串](https://leetcode.cn/problems/longest-palindromic-substring/description/)
 ```C++
     string longestPalindrome(string s) {
         int n=s.size();
@@ -183,7 +185,8 @@ int main() {
         return s0;
     }
 ```
-3. [最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
+2. 公共子序列问题
+* [最长公共子序列](https://leetcode-cn.com/problems/longest-common-subsequence/)
 ```C++
 class Solution {
 public:
@@ -217,6 +220,124 @@ public:
         return dp[m-1][n-1];
     }
 };
+```
+* [最长公共子序列(二)](https://www.nowcoder.com/practice/6d29638c85bb4ffd80c020fe244baf11?tpId=295&tqId=991075&ru=/exam/oj&qru=/ta/format-top101/question-ranking&sourceUrl=%2Fexam%2Foj)
+```C++
+    string LCS(string s1, string s2) {
+        int m = s1.size();
+        int n = s2.size();
+        if(m == 0 || n == 0)
+            return "-1";
+        vector<vector<int> > dp(m,vector<int> (n,0));
+        vector<vector<int> > dr(m,vector<int> (n,0));
+        for(int i = 0; i < m; ++i)
+        {
+            for(int j = 0; j < n; ++j)
+            {
+                if(s1[i] == s2[j])
+                {
+                    if(i == 0|| j == 0)
+                    {
+                        dp[i][j] = 1;
+                        dr[i][j] = 0; // 没有地方后退了
+                    }else{
+                        dp[i][j] = dp[i-1][j-1] + 1;
+                        dr[i][j] = 1; // 从左上角过来
+                    }
+                }else{
+                    if(i == 0||j == 0)
+                    {
+                        if(i == 0 && j == 0)
+                        {
+                            dp[i][j] = 0;
+                            dr[i][j] = 0; // 没有地方可退了
+                        }else if(i > 0)
+                        {
+                            dp[i][j] = dp[i-1][j];
+                            dr[i][j] = 2;
+                        }else if(j > 0)
+                        {
+                            dp[i][j] = dp[i][j-1];
+                            dr[i][j] = 3;
+                        }
+                    }else{
+                        dp[i][j] = max(dp[i-1][j],dp[i][j-1]);
+                        if(dp[i-1][j] > dp[i][j-1])
+                        {
+                            dr[i][j] = 2; // 从上边过来
+                        }else{
+                            dr[i][j] = 3; // 从左边过来
+                        }
+                    }
+                }
+            }
+        }
+        string com;
+        if(dp[m-1][n-1] == 0)
+            com = "-1";
+        else{
+            int i = m-1;
+            int j = n-1;
+            while(1)
+            {
+                if(s1[i] == s2[j])
+                {
+                    com = s1[i] + com;
+                }
+                if(dr[i][j] == 0)
+                {
+                    break;
+                }else{
+                    if(dr[i][j] == 1)
+                    {
+                        --i;
+                        --j;
+                    }else if(dr[i][j] == 2)
+                    {
+                        --i;
+                    }else if(dr[i][j] == 3)
+                    {
+                        --j;
+                    }
+                }
+            }
+        }
+        return com;
+    }
+```
+3. 子串问题
+* [最长公共子串](https://www.nowcoder.com/practice/f33f5adc55f444baa0e0ca87ad8a6aac?tpId=196&tqId=37132&rp=1&ru=/exam/oj&qru=/exam/oj&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26pageSize%3D50%26search%3D%25E6%259C%2580%25E9%2595%25BF%25E5%2585%25AC%25E5%2585%25B1%25E5%25AD%2590%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D196&difficulty=undefined&judgeStatus=undefined&tags=&title=最长公共子)
+```C++
+    string LCS(string s1, string s2) {
+        int m = s1.size();
+        int n = s2.size();
+        int mx = 0,pos=0;
+        vector<vector<int> > dp(m,vector<int> (n,0));
+        for(int i = 0; i < m; ++i)
+        {
+            for(int j = 0; j < n; ++j)
+            {
+                if(s1[i] == s2[j])
+                {
+                    if(i ==0 || j == 0)
+                    {
+                        dp[i][j] = 1;
+                    }else{
+                        dp[i][j] = dp[i-1][j-1] + 1;
+                    }
+                }else{
+                    dp[i][j] = 0;
+                }
+                if(dp[i][j] > mx)
+                {
+                    mx = dp[i][j];
+                    pos = i;
+                }
+            }
+        }
+        string str = s1.substr(pos-mx+1,mx); // 取得子串，从pos开始倒数mx个字符，包括pos位置的字符
+        return str;
+    }
 ```
 4. [编辑距离](https://leetcode.cn/problems/edit-distance/)
 ```C++
