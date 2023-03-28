@@ -92,7 +92,7 @@ public:
     }
 ```
 
-### 二维矩阵
+# 二维矩阵
 1. [放苹果](https://www.nowcoder.com/practice/bfd8234bb5e84be0b493656e390bdebf?tpId=37&tqId=21284&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fdifficulty%3D2%26page%3D1%26pageSize%3D50%26search%3D%26tpId%3D37%26type%3D37&difficulty=2&judgeStatus=undefined&tags=&title=)
 ```C++
 int main() {
@@ -339,7 +339,7 @@ public:
         return str;
     }
 ```
-4. [编辑距离](https://leetcode.cn/problems/edit-distance/)
+* [编辑距离](https://leetcode.cn/problems/edit-distance/)
 ```C++
 /*
 dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首先初始化动态数组，dp[0][j]表示将一个空串转换成str2的前j个字符需要操作数，我们知道应该是j个插入操作;dp[i][0]表示将str1的前i个字符转换为空串的操作数，我们知道应该是i个删除操作。
@@ -540,8 +540,8 @@ public:
     }
 };
 ```
-### 递增序列问题
-1. [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
+### 线性序列问题
+* [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
 ```C++
     int lengthOfLIS(vector<int>& nums) {
         int n=nums.size();
@@ -561,6 +561,26 @@ public:
             max_len=max(max_len,dp[i]);//返回的max_len是整个数组的最大值
         }
         return max_len;
+    }
+```
+* [连续子链表最大和](https://www.nowcoder.com/practice/650b68dfa69d492d92645aecd7da9b21?tpId=196&tqId=39746&rp=1&ru=/exam/oj&qru=/exam/oj&sourceUrl=%2Fexam%2Foj&difficulty=undefined&judgeStatus=undefined&tags=580&title=)
+```C++
+    int FindGreatestSumOfSubArray(ListNode* head) {
+        // write code here
+        int mx = head->val; // mx代表截止当前结点的包含的子链表的最大值
+        int dp = head->val; // dp代表着以当前结点结尾的子链表的和的最大值
+        while(head->next)
+        {
+            head = head->next;
+            if(dp + head->val > head->val)
+            {
+                dp = dp + head->val;
+            }else{
+                dp = head->val;
+            }
+            mx = max(dp,mx);
+        }
+        return mx;
     }
 ```
 ### 背包问题
