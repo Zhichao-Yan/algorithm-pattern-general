@@ -113,3 +113,55 @@ void QSort(vector<int> &v,int low,int high)
         return res;
     }
 ```
+
+* [数组中的逆序对](https://www.nowcoder.com/practice/96bd6684e04a44eb80e6a68efc0ec6c5?tpId=295&tqId=23260&ru=/exam/oj&qru=/ta/format-top101/question-ranking&sourceUrl=%2Fexam%2Foj%3Fpage%3D1%26tab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D295)
+```C++
+    long long cnt = 0;
+    int InversePairs(vector<int> data) {
+        if(data.size() < 2)
+            return 0;
+        mergeSort(data,0,data.size() - 1);
+        return cnt % 1000000007;
+    }
+    void mergeSort(vector<int> &data,int left,int right)
+    {
+        if(left < right)
+        {
+            int mid = left + (right - left) / 2;
+            mergeSort(data,left,mid);
+            mergeSort(data,mid + 1,right);
+            Merge(data,left,mid,right);
+        }
+    }
+    void Merge(vector<int> &data,int left,int mid,int right)
+    {
+        vector<int> temp(right - left +1,0); // O(n)的空间复杂度
+        int k = 0;
+        int j = left;
+        int l = left;
+        int r = mid + 1;
+        while(l <= mid && r <= right)
+        {
+            if(data[l] <= data[r])
+            {
+                temp[k++] = data[l++];
+            }else{
+                temp[k++] = data[r++];
+                // 从l到mid共有mid-l+1个元素大于data[r];
+                cnt += mid - l + 1; // 关键点在这！层层交换
+            }
+        }
+        while(l <= mid)
+        {
+            temp[k++] = data[l++];
+        }
+        while(r <= right)
+        {
+            temp[k++] = data[r++];
+        }
+        for(auto v : temp) // 需要把数据反填回去
+        {
+            data[j++] = v;
+        }
+    }
+```
