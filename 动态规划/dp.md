@@ -32,7 +32,68 @@ public:
     }
 };
 ```
-2. [连续子数组的最大和](https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
+5. [等差数列划分](https://leetcode.cn/problems/arithmetic-slices/description/)
+```C++ 
+    int numberOfArithmeticSlices(vector<int>& nums) {
+        if(nums.size()<3)//size<3直接不存在等差数组
+            return 0;
+        int sum=0;//累积dp和，即输入数组nums总的等差数列个数
+        int dp=0;//dp定义成以nums[i]元素结尾的连续子数组包含的等差数列个数
+        for(int i=2;i<nums.size();i++)
+        {
+            if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
+            {
+                dp+=1;
+            }else
+                dp=0;
+            sum+=dp;
+        }
+        return sum;
+    }
+```
+* [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
+```C++
+    int lengthOfLIS(vector<int>& nums) {
+        int n=nums.size();
+        if(n==0||n==1)
+            return n;
+        vector<int> dp(n,1);//dp定义为以【第i(0~n-1)个元素nums[i]结尾的子序列】（不要求是连续的）的最大长度
+        int max_len=1;
+        for(int i=1;i<n;i++)//求dp[i]是建立在它前面元素的dp[j](不要求连续）的基础上，因此需要对nums[i]前面的每个元素nums[j]进行回溯（和nums[i]）进行比较
+        {
+            for(int j=0;j<i;j++)
+            {
+                if(nums[j]<nums[i])
+                {
+                    dp[i]=max(dp[i],dp[j]+1);
+                }
+            }
+            max_len=max(max_len,dp[i]);//返回的max_len是整个数组的最大值
+        }
+        return max_len;
+    }
+```
+* [连续子链表的最大和](https://www.nowcoder.com/practice/650b68dfa69d492d92645aecd7da9b21?tpId=196&tqId=39746&rp=1&ru=/exam/oj&qru=/exam/oj&sourceUrl=%2Fexam%2Foj&difficulty=undefined&judgeStatus=undefined&tags=580&title=)
+```C++
+    int FindGreatestSumOfSubArray(ListNode* head) {
+        // write code here
+        int mx = head->val; // mx代表截止当前结点的包含的子链表的最大值
+        int dp = head->val; // dp代表着以当前结点结尾的子链表的和的最大值
+        while(head->next)
+        {
+            head = head->next;
+            if(dp + head->val > head->val)
+            {
+                dp = dp + head->val;
+            }else{
+                dp = head->val;
+            }
+            mx = max(dp,mx);
+        }
+        return mx;
+    }
+```
+* [连续子数组的最大和](https://leetcode.cn/problems/lian-xu-zi-shu-zu-de-zui-da-he-lcof/)
 * 首先确定dp的定义：为以nums[i]元素结尾的连续子数组的最大和
 * max_sum寻找以nums[i]元素结尾的连续子数组最大和中的最大者
 ```C++
@@ -47,7 +108,7 @@ public:
         return max_sum;
     }
 ```
-3. [连续子数组最大乘积](https://leetcode.cn/problems/maximum-product-subarray/)
+* [连续子数组最大乘积](https://leetcode.cn/problems/maximum-product-subarray/)
 ```C++
     int maxProduct(vector<int>& nums) {
         if(nums.size()==1)
@@ -71,29 +132,8 @@ public:
         return maxProduct;
     }
 ```
-
-5. [等差数列划分](https://leetcode.cn/problems/arithmetic-slices/description/)
-```C++ 
-    int numberOfArithmeticSlices(vector<int>& nums) {
-        if(nums.size()<3)//size<3直接不存在等差数组
-            return 0;
-        int sum=0;//累积dp和，即输入数组nums总的等差数列个数
-        int dp=0;//dp定义成以nums[i]元素结尾的连续子数组包含的等差数列个数
-        for(int i=2;i<nums.size();i++)
-        {
-            if(nums[i]-nums[i-1]==nums[i-1]-nums[i-2])
-            {
-                dp+=1;
-            }else
-                dp=0;
-            sum+=dp;
-        }
-        return sum;
-    }
-```
-
 # 二维矩阵
-1. [放苹果](https://www.nowcoder.com/practice/bfd8234bb5e84be0b493656e390bdebf?tpId=37&tqId=21284&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fdifficulty%3D2%26page%3D1%26pageSize%3D50%26search%3D%26tpId%3D37%26type%3D37&difficulty=2&judgeStatus=undefined&tags=&title=)
+* [放苹果](https://www.nowcoder.com/practice/bfd8234bb5e84be0b493656e390bdebf?tpId=37&tqId=21284&rp=1&ru=/exam/oj/ta&qru=/exam/oj/ta&sourceUrl=%2Fexam%2Foj%2Fta%3Fdifficulty%3D2%26page%3D1%26pageSize%3D50%26search%3D%26tpId%3D37%26type%3D37&difficulty=2&judgeStatus=undefined&tags=&title=)
 ```C++
 int main() {
     int m,n;
@@ -121,6 +161,89 @@ int main() {
         cout<<v[m][n]<<endl;
     }
 }
+```
+* [编辑距离](https://leetcode.cn/problems/edit-distance/)
+```C++
+/*
+dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首先初始化动态数组，dp[0][j]表示将一个空串转换成str2的前j个字符需要操作数，我们知道应该是j个插入操作;dp[i][0]表示将str1的前i个字符转换为空串的操作数，我们知道应该是i个删除操作。
+接着用两层for循环遍历两个字符串str1、str2。
+比较每一个字符str1[i-1]和str2[j-1]，即str1第i个字符和str2第j个字符
+若两个字符相等，即str1[i-1] == str2[j-1]，则在这一个位置的编辑距离和上一个字符相同，因此对应的数组dp[i][j]=dp[i-1][j-1]；
+若两个字符不相等：
+可以通过可删除str1[i-1]这个字符，但是还需dp[i-1][j]个编辑操作才能使两个字符串相同
+即dp[i][j] = 1 + dp[i-1][j]；
+还可以通过删除str2[j-1]这个字符，但是还需dp[i][j-1]个编辑操作才能使两个字符串相同
+即dp[i][j] = 1 + dp[i][j-1]；
+也可以替换str1[i-1]为str2[i-1]使二者相等，此时dp[i][j] = 1 + dp[i-1][j-1]。
+取三者之中最小为两个字符串的最小编辑距离
+*/
+    int minDistance(string word1, string word2) {
+        int m=word1.size();
+        int n=word2.size();
+        vector< vector<int>> dp(m+1,vector<int>(n+1,0));
+        dp[0][0]=0;
+        for(int i=1;i<=m;i++)
+            dp[i][0]=i;
+        for(int j=1;j<=n;j++)
+            dp[0][j]=j;
+        for(int i=1;i<=m;i++)
+        {
+            for(int j=1;j<=n;j++)
+            {
+                if(word1[i-1]==word2[j-1])
+                    dp[i][j]=dp[i-1][j-1];
+                else
+                    dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;
+            }
+        }
+        return dp[m][n];
+    }
+```
+* [正则式匹配](https://leetcode.cn/problems/regular-expression-matching/description/)
+```C++
+    // '*'的意思是前面的字符出现0次或者多次，例如出现0次代表消去前面的字符
+    bool isMatch(string s, string p) {
+    int n=s.size();
+    int m=p.size();
+    vector<vector<bool>> dp(n+1,vector<bool>(m+1,false));
+    dp[0][0]=true;
+    for(int j=2;j<=m;j++)//'*'不可能出现在串p开头第一的位置,所以从j=2开始
+    {
+        if(p[j-1]=='*')
+            dp[0][j]=dp[0][j-2];//s为0，也是可能和正则式进行匹配的，如S=""和P="a*"
+    }
+    for(int i=1;i<=n;i++)
+    {
+        for(int j=1;j<=m;j++)
+        {
+            if(p[j-1]=='.')
+                dp[i][j]=dp[i-1][j-1];
+            else{
+                if(p[j-1]=='*')
+                {
+                    if(p[j-2]=='.')//p[j-2]为'.'的情况
+                    {
+                        dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j];
+
+                    }else{//p[j-2]为字母的情况
+                        if(p[j-2]==s[i-1])
+                        {
+                            dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j-1]||dp[i-1][j];
+                        }else{
+                            dp[i][j]=dp[i][j-2];//因为不相等，'*'前面那个字母出现0次
+                            //直接匹配第i个字符和第j-2个字符，看是否匹配，如果匹配，那么
+                            //dp[i][j]也匹配了，如果不匹配，那么dp[i][j]就不匹配
+                        }
+                    }
+                }else{
+                    if(p[j-1]==s[i-1]&&dp[i-1][j-1])//如果是字母，则判断二者是否相等
+                        dp[i][j]=true;//并且前面是否匹配
+                }
+            }
+        }
+    }
+    return dp[n][m];
+    }
 ```
 ### 序列和子串问题
 1. 回文子序列问题
@@ -339,43 +462,7 @@ public:
         return str;
     }
 ```
-* [编辑距离](https://leetcode.cn/problems/edit-distance/)
-```C++
-/*
-dp[i][j] 表示str1的前i个字符和str2的前y个字符的编辑距离。首先初始化动态数组，dp[0][j]表示将一个空串转换成str2的前j个字符需要操作数，我们知道应该是j个插入操作;dp[i][0]表示将str1的前i个字符转换为空串的操作数，我们知道应该是i个删除操作。
-接着用两层for循环遍历两个字符串str1、str2。
-比较每一个字符str1[i-1]和str2[j-1]，即str1第i个字符和str2第j个字符
-若两个字符相等，即str1[i-1] == str2[j-1]，则在这一个位置的编辑距离和上一个字符相同，因此对应的数组dp[i][j]=dp[i-1][j-1]；
-若两个字符不相等：
-可以通过可删除str1[i-1]这个字符，但是还需dp[i-1][j]个编辑操作才能使两个字符串相同
-即dp[i][j] = 1 + dp[i-1][j]；
-还可以通过删除str2[j-1]这个字符，但是还需dp[i][j-1]个编辑操作才能使两个字符串相同
-即dp[i][j] = 1 + dp[i][j-1]；
-也可以替换str1[i-1]为str2[i-1]使二者相等，此时dp[i][j] = 1 + dp[i-1][j-1]。
-取三者之中最小为两个字符串的最小编辑距离
-*/
-    int minDistance(string word1, string word2) {
-        int m=word1.size();
-        int n=word2.size();
-        vector< vector<int>> dp(m+1,vector<int>(n+1,0));
-        dp[0][0]=0;
-        for(int i=1;i<=m;i++)
-            dp[i][0]=i;
-        for(int j=1;j<=n;j++)
-            dp[0][j]=j;
-        for(int i=1;i<=m;i++)
-        {
-            for(int j=1;j<=n;j++)
-            {
-                if(word1[i-1]==word2[j-1])
-                    dp[i][j]=dp[i-1][j-1];
-                else
-                    dp[i][j]=min(min(dp[i-1][j],dp[i][j-1]),dp[i-1][j-1])+1;
-            }
-        }
-        return dp[m][n];
-    }
-```
+### 路径问题
 5. [最小路径和](https://leetcode.cn/problems/minimum-path-sum/description/) 
 ```C++
     int minPathSum(vector<vector<int>>& grid) {
@@ -452,54 +539,8 @@ public:
     }
 };
 ```
-8.[正则式匹配](https://leetcode.cn/problems/regular-expression-matching/description/)
-```C++
-    // '*'的意思是前面的字符出现0次或者多次，例如出现0次代表消去前面的字符
-    bool isMatch(string s, string p) {
-    int n=s.size();
-    int m=p.size();
-    vector<vector<bool>> dp(n+1,vector<bool>(m+1,false));
-    dp[0][0]=true;
-    for(int j=2;j<=m;j++)//'*'不可能出现在串p开头第一的位置,所以从j=2开始
-    {
-        if(p[j-1]=='*')
-            dp[0][j]=dp[0][j-2];//s为0，也是可能和正则式进行匹配的，如S=""和P="a*"
-    }
-    for(int i=1;i<=n;i++)
-    {
-        for(int j=1;j<=m;j++)
-        {
-            if(p[j-1]=='.')
-                dp[i][j]=dp[i-1][j-1];
-            else{
-                if(p[j-1]=='*')
-                {
-                    if(p[j-2]=='.')//p[j-2]为'.'的情况
-                    {
-                        dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j];
-
-                    }else{//p[j-2]为字母的情况
-                        if(p[j-2]==s[i-1])
-                        {
-                            dp[i][j]=dp[i][j-1]||dp[i][j-2]||dp[i-1][j-1]||dp[i-1][j];
-                        }else{
-                            dp[i][j]=dp[i][j-2];//因为不相等，'*'前面那个字母出现0次
-                            //直接匹配第i个字符和第j-2个字符，看是否匹配，如果匹配，那么
-                            //dp[i][j]也匹配了，如果不匹配，那么dp[i][j]就不匹配
-                        }
-                    }
-                }else{
-                    if(p[j-1]==s[i-1]&&dp[i-1][j-1])//如果是字母，则判断二者是否相等
-                        dp[i][j]=true;//并且前面是否匹配
-                }
-            }
-        }
-    }
-    return dp[n][m];
-    }
-```
 ### 买股票问题
-1. [买卖股票的最好时机](https://www.nowcoder.com/practice/64b4262d4e6d4f6181cd45446a5821ec?tpId=117&&tqId=37717) 
+1. [买卖股票的最好时机](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock/description/) 
 ```C++
 class Solution {
 public:
@@ -518,6 +559,22 @@ public:
         return profit;
     }
 };
+```
+2. [买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/description/)
+```C++
+    // 两数之间递增则有利润
+    // 每一天都可以买卖
+    int maxProfit(vector<int>& prices) {
+        int sum = 0;
+        for(int i=1;i<prices.size();i++)
+        {
+            if(prices[i] > prices[i-1])
+            {
+                sum+=prices[i] - prices[i-1];
+            }
+        }
+        return sum;
+    }
 ```
 ### 相邻性问题
 1. [打家劫舍](https://leetcode-cn.com/problems/house-robber/) 
@@ -540,47 +597,52 @@ public:
     }
 };
 ```
-### 线性序列问题
-* [最长递增子序列](https://leetcode.cn/problems/longest-increasing-subsequence/description/)
+2. [打家劫舍 II](https://leetcode.cn/problems/house-robber-ii/description/)
 ```C++
-    int lengthOfLIS(vector<int>& nums) {
-        int n=nums.size();
-        if(n==0||n==1)
-            return n;
-        vector<int> dp(n,1);//dp定义为以【第i(0~n-1)个元素nums[i]结尾的子序列】（不要求是连续的）的最大长度
-        int max_len=1;
-        for(int i=1;i<n;i++)//求dp[i]是建立在它前面元素的dp[j](不要求连续）的基础上，因此需要对nums[i]前面的每个元素nums[j]进行回溯（和nums[i]）进行比较
+// 跟上一题不一样,我们需要找出一种组合不能同时包含头尾的房子，并且也不相邻的组合
+// 从0~size()-2选出最大的一个
+// 从1～size()-1选出最大的一个
+// 两相比较
+    int rob(vector<int>& nums) {
+        if(nums.size()==1)
+            return nums[0];
+        int x=0;
+        int y=nums[1];
+        for(int i=2;i<nums.size();i++)
         {
-            for(int j=0;j<i;j++)
-            {
-                if(nums[j]<nums[i])
-                {
-                    dp[i]=max(dp[i],dp[j]+1);
-                }
-            }
-            max_len=max(max_len,dp[i]);//返回的max_len是整个数组的最大值
+            int z=max(x+nums[i],y);
+            x=y;
+            y=z;
         }
-        return max_len;
+        int m=0;
+        int n=nums[0];
+        for(int i=1;i<nums.size()-1;i++)
+        {
+            int l=max(m+nums[i],n);
+            m=n;
+            n=l;
+        }
+        return max(y,n);
     }
 ```
-* [连续子链表最大和](https://www.nowcoder.com/practice/650b68dfa69d492d92645aecd7da9b21?tpId=196&tqId=39746&rp=1&ru=/exam/oj&qru=/exam/oj&sourceUrl=%2Fexam%2Foj&difficulty=undefined&judgeStatus=undefined&tags=580&title=)
+3. [打家劫舍 III](https://leetcode.cn/problems/house-robber-iii/description/) 
 ```C++
-    int FindGreatestSumOfSubArray(ListNode* head) {
-        // write code here
-        int mx = head->val; // mx代表截止当前结点的包含的子链表的最大值
-        int dp = head->val; // dp代表着以当前结点结尾的子链表的和的最大值
-        while(head->next)
-        {
-            head = head->next;
-            if(dp + head->val > head->val)
-            {
-                dp = dp + head->val;
-            }else{
-                dp = head->val;
-            }
-            mx = max(dp,mx);
-        }
-        return mx;
+    // 见leedcode题解
+    unordered_map<TreeNode*,int> p,q;
+    int rob(TreeNode* root) {
+        dfs(root);
+        return max(p[root],q[root]);
+    }
+    // 后序递归遍历
+    void dfs(TreeNode* root)
+    {
+        if(!root)
+            return;
+        dfs(root->left);
+        dfs(root->right);
+        p[root] = root->val + q[root->left] + q[root->right];
+        q[root] = max(q[root->left] , p[root->left]) + max(q[root->right] , p[root->right]);
+        return;
     }
 ```
 ### 背包问题
@@ -673,7 +735,6 @@ int main() {
         return dp[target];
     }
 ```
-
 
 ### 分割类问题
 1. [完全平方数个数](https://leetcode-cn.com/problems/perfect-squares/)
